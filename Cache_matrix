@@ -1,0 +1,36 @@
+makeCacheMatrix <- function(x=matrix()) {
+mat_inv <- NULL
+	set <- function(mat) {
+	  x <<- mat
+	  mat_inv <<- NULL
+	}
+	get <- function()x
+	setinv <- function(inverse)mat_inv <<- inverse
+	getinv <- function()mat_inv
+list(set=set, get=get, setinv=setinv, getinv=getinv)
+}
+
+cacheSolve <- function(x, ...) {
+	mat_inv <- x$getinv()
+	  if (!is.null(mat_inv)) {
+		message("Cached data got")
+		return(mat_inv)
+	  }
+data<-x$get()
+mat_inv <- solve(data, ...)
+x$setinv(mat_inv)
+mat_inv
+}
+
+##RESULT:
+##1. Matrix will be got
+	square_mat <- makeCacheMatrix(matrix(2:5, 2, 2))
+	square_mat$get()
+##2. To get inverse of matrix which gives back "NULL"
+	square_mat$getinv()
+##3. To compute inverse of special matrix returned by above function
+##we can use the above code again to get the statement given in if clause
+##to check it is correct or not 
+	cacheSolve(square_mat)
+##4. To get inverse of the original matrix
+	square_mat$getinv()
